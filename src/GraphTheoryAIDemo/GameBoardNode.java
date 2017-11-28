@@ -4,17 +4,16 @@ import GraphTheoryAIDemo.TicTacToe.TURN;
 
 /**
  * 
- * @author gabe This class will represent a GameBoard State for the min max
- *         algorithm
+ * @author gabe This class will represent a GameBoard State for the min max algorithm
  */
 public class GameBoardNode implements ISpeedyMatrix, Comparable {
-	private int[] board;// board -1 is available move, 0,1 are player
+	private int[][] board;// board -1 is available move, 0,1 are player
 	private TURN player;// current player move
 	private int rank;// heuristic
 	// private int round;
 	private int id;
 
-	public GameBoardNode(int[] board, TURN player, int round) {
+	public GameBoardNode(int[][] board, TURN player, int round) {
 		this.board = board;
 		this.player = player;
 		this.id = round;// System.currentTimeMillis();
@@ -30,7 +29,7 @@ public class GameBoardNode implements ISpeedyMatrix, Comparable {
 	/**
 	 * @return the board
 	 */
-	public int[] getBoard() {
+	public int[][] getBoard() {
 		return board;
 	}
 
@@ -53,39 +52,35 @@ public class GameBoardNode implements ISpeedyMatrix, Comparable {
 	}
 
 	public String toString() {
-		String string = "[";
-		for (int i = 0; i < this.board.length; ++i) {
-
-			if (i > 0 && (i) % TicTacToe.ROW == 0) {
-				string += "]\n[";
+		String string = "";
+		for (int i = 0; i < 3; ++i) {
+			string+="[ ";
+			for (int j = 0; j < 3; ++j) {
+				string += " " + (this.board[i][j]==Integer.MIN_VALUE?"-":this.board[i][j]) + " ";
 			}
-			switch (this.board[i]) {
-			case Integer.MIN_VALUE:
-				string += "-";
-				break;
-			case 1:
-				string += "X";
-				break;
-			case 2:
-				string += "O";
-				break;
-			}// end switch
-			string += " ";
-		} // end for
-		return string + "]";
+			string += "]\n";
+		}
+		return string;
+		/*
+		 * for (int i = 0; i < this.board.length; ++i) {
+		 * 
+		 * if (i > 0 && (i) % TicTacToe.ROW == 0) { string += "]\n["; } switch (this.board[i]) { case Integer.MIN_VALUE: string += "-"; break; case 1: string += "X"; break; case 2:
+		 * string += "O"; break; }// end switch string += " "; } // end for return string + "]";
+		 */
 	}
 
 	public long getID() {
 		return this.id;
 	}
+	public void printBoard(){
+		System.out.println(this.toString());
+	}
 
 	@Override
 	public int compareTo(Object o) {
 		GameBoardNode g = (GameBoardNode) o;
-		if (this.id < g.getID())
-			return 1;
-		else if (this.id > g.getID())
-			return -1;
+		if (this.id < g.getID()) return 1;
+		else if (this.id > g.getID()) return -1;
 		return 0;
 	}
 }

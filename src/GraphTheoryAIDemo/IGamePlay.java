@@ -10,7 +10,7 @@ public interface IGamePlay {
 	 * @param board
 	 * @return
 	 */
-	boolean isGameOver(int[] board, TURN player);
+	int isGameOver(int[][] board, TURN player);
 	/**
 	 * methods to refresh game
 	 */
@@ -19,28 +19,28 @@ public interface IGamePlay {
 	 * Display current board state - rank - turn
 	 * @param node
 	 */
-	void displayCurrentBoard(Component c,GameBoardNode node);
+	void displayCurrentBoard(Component c,GameBoardNode node,String time);
 	/**
 	 * Checks if tic tac toe winner
 	 * @param board
 	 * @param player
 	 * @return
 	 */
-	boolean isThreeInARow(int[] board, TURN player);
+	boolean isThreeInARow(int[][] board, TURN player);
 	/**
 	 * 
 	 * @param board
 	 * @param player
 	 */
-	void makeMoveAI(int[] board, TURN player);
-	boolean isLeftDiagonalWin(int[] board,TURN player);
-	boolean isRightDiagonalWin(int[] board,TURN player);
-	boolean isHorizontalWin(int[]board,TURN player);
-	boolean isVerticalWin(int[] board, TURN player);
+	void makeMoveAI(int[][] board, TURN player);
+	//boolean isLeftDiagonalWin(int[][] board,TURN player);
+	//boolean isRightDiagonalWin(int[][] board,TURN player);
+//	boolean isHorizontalWin(int[][]board,TURN player);
+	//boolean isVerticalWin(int[][] board, TURN player);
 	/**
 	 * if no spaces contain minvalue
 	 * @param board
 	 * @return
 	 */
-	boolean drawGame(int [] board);
+	boolean drawGame(int[][] board);
 }
