@@ -2,6 +2,7 @@ package GraphTheoryAIDemo;
 
 import java.awt.Component;
 
+import GraphTheoryAIDemo.MinMaxTicTacToe.DIFFICULTY;
 import GraphTheoryAIDemo.TicTacToe.TURN;
 
 public interface IGamePlay {
@@ -32,7 +33,7 @@ public interface IGamePlay {
 	 * @param board
 	 * @param player
 	 */
-	void makeMoveAI(int[][] board, TURN player);
+	void makeMoveAI(int[][] board, TURN player, DIFFICULTY diff);
 	//boolean isLeftDiagonalWin(int[][] board,TURN player);
 	//boolean isRightDiagonalWin(int[][] board,TURN player);
 //	boolean isHorizontalWin(int[][]board,TURN player);

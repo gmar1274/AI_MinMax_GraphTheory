@@ -14,7 +14,7 @@ import GraphTheoryAIDemo.TicTacToe.TURN;
  *
  */
 public class MinMaxTicTacToe implements IMinMaxAlgorithm {
-
+	public static enum DIFFICULTY{EASY, INTERMEDIATE, HARD}
 	public final int COMPUTER_WIN = 400, PLAYER_WIN = -400, TIE = 1, GAME_NOT_OVER = 0;// arbritary
 	// values
 	private int PLAYER_MOVE_SYMBOL = 1, COMPUTER_MOVE_SYMBOL = 2; // denote a value on the board
@@ -117,10 +117,11 @@ public class MinMaxTicTacToe implements IMinMaxAlgorithm {
 	 * @return AIMOVE - int[]location and elapsed_time in nano seconds
 	 * 
 	 */
-	public AIMOVE AITurn(int[][] board) {
+	public AIMOVE AITurn(int[][] board, DIFFICULTY diff) {
 		long start = System.nanoTime();
 		this.game_board = board;
-		int depth = maxdepth, score, ai_row = 0, ai_col = 0;
+		int depth = getMaxDepth(diff), score, ai_row = 0, ai_col = 0;
+		System.out.println("depth: "+depth);
 		int alpha = -this.BEST_SCORE, beta = this.BEST_SCORE;// assume alpha is worst move similarly beta best move(*Remember trying to maximize alpha and minimize beta)
 		int best = -this.BEST_SCORE;//AI wants positive
 		for (int row = 0; row < 3; row++) {// naively start at beginning spot
@@ -226,11 +227,11 @@ public class MinMaxTicTacToe implements IMinMaxAlgorithm {
 	 *            -on or off will only perform naive minmax - off
 	 * @return loc- best location int array [], array[0]=row , array[1]=col
 	 */
-	public AIMOVE AITurn(int[][] board, boolean alpha_beta_false) {
+	public AIMOVE AITurn(int[][] board, boolean alpha_beta_false, DIFFICULTY diff) {
 		long start = System.nanoTime();
 		this.game_board = board;
 		this.printboard();//debug
-		int depth = maxdepth, score, ai_row = 0, ai_col = 0, best = -BEST_SCORE;
+		int depth = getMaxDepth(diff), score, ai_row = 0, ai_col = 0, best = -BEST_SCORE;
 		for (int row = 0; row < 3; row++) {// naively start at beginning spot
 			for (int col = 0; col < 3; col++) {// and look for an available next move
 				if (game_board[row][col] == Integer.MIN_VALUE) {// if spot available *Recall (-infinity<==>empty) otherwise spot is taken.
@@ -253,10 +254,19 @@ public class MinMaxTicTacToe implements IMinMaxAlgorithm {
 		return new AIMOVE(loc, elapsed_time);
 	}
 
+	private int getMaxDepth(DIFFICULTY diff) {
+		if(diff.equals(DIFFICULTY.EASY)){
+			return 1;
+		}else if(diff.equals(DIFFICULTY.INTERMEDIATE)){
+			return 2;
+		}else{
+			return this.maxdepth;
+		}
+	}
+
 	/**
-	 * Minimizer function using alpha-beta pruning
-	 * 
-	 * @return score - which is the heuristic value
+	 * Minimizer function 
+	 * @return score - terminal state
 	 */
 	public int min(int depth) {
 		int best = BEST_SCORE, score;//assume worst case
@@ -444,7 +454,7 @@ public class MinMaxTicTacToe implements IMinMaxAlgorithm {
 	 * @return
 	 */
 	private int[] AITurn() {// update latest board
-		int best = -20000, depth = maxdepth, score, ai_row = 0, ai_col = 0;
+		int best = -20000, depth = maxdepth, score, ai_row = 0, ai_col = 0;//THIS IS HUGE...the starting best value...
 		for (int row = 0; row < 3; row++) {// naively start at beginning
 			for (int col = 0; col < 3; col++) {
 				if (game_board[row][col] == Integer.MIN_VALUE) {// if spot

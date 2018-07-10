@@ -31,6 +31,7 @@ import java.awt.FlowLayout;
 import javax.swing.border.LineBorder;
 
 import GraphTheoryAIDemo.Loading.TIME;
+import GraphTheoryAIDemo.MinMaxTicTacToe.DIFFICULTY;
 
 import javax.swing.UIManager;
 import java.awt.GridBagLayout;
@@ -47,6 +48,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
 import javax.swing.JTextPane;
 import javax.swing.ButtonGroup;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass, ActionListener {
 
@@ -89,8 +92,10 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 
 	private String AI_TIME;
 	private JCheckBox chckbxAlphabeta;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private  ButtonGroup buttonGroup = new ButtonGroup();
 	private JLabel date_label;
+	private  ButtonGroup buttonGroup_1 = new ButtonGroup();
+	private DIFFICULTY difficulty;
 
 	/**
 	 * Launch the application.
@@ -128,6 +133,27 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
+		
+		JMenuItem mntmRestart = new JMenuItem("Restart");
+		mntmRestart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							TicTacToe frame = new TicTacToe();
+							frame.setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+		});
+		mnFile.add(mntmRestart);
+		
+		JSeparator separator_3 = new JSeparator();
+		mnFile.add(separator_3);
 
 		JMenuItem mntmNewMenuItem = new JMenuItem("Exit");
 		mnFile.add(mntmNewMenuItem);
@@ -184,6 +210,47 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 		chckbxNanosecondsns.setActionCommand("NS");
 		buttonGroup.add(chckbxNanosecondsns);
 		mnTimeUnit.add(chckbxNanosecondsns);
+		
+		JSeparator separator_4 = new JSeparator();
+		mnSettings.add(separator_4);
+		
+		JMenu mnDifficulty = new JMenu("Difficulty");
+		mnSettings.add(mnDifficulty);
+		
+		JCheckBox chckbxEasy = new JCheckBox("Easy");
+		chckbxEasy.setActionCommand("Easy");
+		chckbxEasy.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				difficulty = DIFFICULTY.EASY;
+			}
+		});
+		buttonGroup_1.add(chckbxEasy);
+		mnDifficulty.add(chckbxEasy);
+		
+		JCheckBox chckbxIntermediate = new JCheckBox("Intermediate");
+		chckbxIntermediate.setActionCommand("Intermediate");
+		chckbxIntermediate.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				difficulty = DIFFICULTY.INTERMEDIATE;
+			}
+		});
+		buttonGroup_1.add(chckbxIntermediate);
+		mnDifficulty.add(chckbxIntermediate);
+		
+		JCheckBox chckbxHard = new JCheckBox("Hard");
+		buttonGroup_1.add(chckbxHard);
+		chckbxHard.setText("Hard");
+		chckbxHard.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				difficulty = DIFFICULTY.HARD;
+			}
+		});
+		chckbxHard.setSelected(true);
+		mnDifficulty.add(chckbxHard);
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new LineBorder(new Color(0, 0, 0), 7));
 
@@ -440,7 +507,18 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 				startGame();
 			}
 		});
-
+		this.difficulty = DIFFICULTY.HARD;
+		//System.out.println(this.buttonGroup_1.getSelection().getActionCommand());
+		//this.difficulty = setDifficulty(this.buttonGroup_1.getSelection().getActionCommand());
+	}
+	private DIFFICULTY setDifficulty(String diff) {
+		if(diff.equalsIgnoreCase(DIFFICULTY.EASY.toString().toLowerCase())){
+		return DIFFICULTY.EASY;
+		}else if (diff.equalsIgnoreCase(DIFFICULTY.INTERMEDIATE.toString().toLowerCase())){
+			return DIFFICULTY.INTERMEDIATE;
+		}else{
+			return DIFFICULTY.HARD;
+		}
 	}
 
 	/**
@@ -553,7 +631,7 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 																			// minmax
 																			// algorithm
 			System.out.println("AI turn! Please wait...");
-			makeMoveAI(this.tictactoe_gameboard, player);
+			makeMoveAI(this.tictactoe_gameboard, player,this.difficulty);
 		}
 	}
 
@@ -636,7 +714,7 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 	 * Uses a method from MinMaxTicTacToe class generates a move.
 	 */
 	@Override
-	public void makeMoveAI(int[][] board, TURN player) {
+	public void makeMoveAI(int[][] board, TURN player, DIFFICULTY diff) {
 		AIMOVE loc;
 		this.player_turn = TURN.PLAYER2;
 		boolean isTime = chkBox_AI_TIME.isSelected();
@@ -673,20 +751,20 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 				}
 			}).start();
 			if (ab) {
-				loc = loading.makeMoveAI(true, this.buttonGroup.getSelection().getActionCommand());
+				loc = loading.makeMoveAI(true, this.buttonGroup.getSelection().getActionCommand(), difficulty);
 				AI_TIME = loading.getElapsedTime();
 				return loc;
 			} else {
-				loc = loading.makeMoveAI(false, this.buttonGroup.getSelection().getActionCommand());
+				loc = loading.makeMoveAI(false, this.buttonGroup.getSelection().getActionCommand(),difficulty);
 				AI_TIME = loading.getElapsedTime();
 				return loc;
 			}
 
 		} else {//no timer
 			if (ab) {
-				loc = this.minMaxClass.AITurn(board);
+				loc = this.minMaxClass.AITurn(board,this.difficulty);
 			} else {
-				loc = this.minMaxClass.AITurn(board, false);
+				loc = this.minMaxClass.AITurn(board, false,this.difficulty);
 			}
 		}
 		return loc;
@@ -744,5 +822,4 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 		if (TURN.PLAYER2.equals(player)) return this.minMaxClass.check4Winner() == this.minMaxClass.COMPUTER_WIN;
 		return false;
 	}
-
 }
