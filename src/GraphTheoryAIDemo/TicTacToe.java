@@ -86,7 +86,7 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 	public JLabel playerone_label;
 	private JTextPane moveHistoryTP;
 	private MinMaxTicTacToe minMaxClass;
-	private Timer t;
+	private Timer timer;
 
 	private JCheckBox chkBox_AI_TIME;
 
@@ -117,8 +117,8 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 	 * Create the frame. Inittialize game board and array of tictac
 	 */
 	public TicTacToe() {
-		t = new Timer(100, this);
-		t.start();
+		timer = new Timer(100, this);
+		timer.start();
 		initGameBoards();
 		this.array = new JButton[3][3];
 		setMaximumSize(new Dimension(1400, 1400));
@@ -682,8 +682,9 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 	 * {@inheritDoc} reset the cell buttons and start buttons
 	 */
 	public void restart() {
-		if (t != null && t.isRunning()) t.stop();
-		else if (t == null) t = new Timer(100, this);
+		/*if (t != null && t.isRunning()) t.stop();
+		else if (t == null) t = new Timer(100, this);*/
+		
 		for (Component c : this.cell_panel.getComponents()) {
 			JButton b = (JButton) c;
 			b.setEnabled(true);
@@ -787,7 +788,7 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 		this.minMaxClass = new MinMaxTicTacToe(this.tictactoe_gameboard, this.PLAYER_ONE_MOVE_VALUE, this.PLAYER_TWO_MOVE_VALUE);
 	}
 
-	private void glowButtons(String btn, String btn2, String btn3) {
+	/*private void glowButtons(String btn, String btn2, String btn3) {
 		SwingUtilities.invokeLater(new Runnable() {
 			int glow = 0;
 			JButton b = array[btn.toCharArray()[0]][btn.toCharArray()[1]];
@@ -796,17 +797,17 @@ public class TicTacToe extends JFrame implements IGamePlay, IMinMaxConsoleClass,
 
 			@Override
 			public void run() {
-				t = new Timer(100, new ActionListener() {
+				timer = new Timer(100, new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 
 					}
 				});//
-				t.start();
+				timer.start();
 			}
 		});
 	}
-
+*/
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE dd, YY h:mm:ss a");
